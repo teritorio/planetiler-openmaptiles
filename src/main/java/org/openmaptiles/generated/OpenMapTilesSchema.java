@@ -365,6 +365,19 @@ public class OpenMapTilesSchema {
        * </ul>
        */
       public static final String SUBCLASS = "subclass";
+
+      /**
+       * Leaf type.
+       * <p>
+       * allowed values:
+       * <ul>
+       * <li>"broadleaved"
+       * <li>"needleleaved"
+       * <li>"mixed"
+       * <li>"leafless"
+       * </ul>
+       */
+      public static final String LEAF_TYPE = "leaf_type";
     }
     /** Attribute values for map elements in the landcover layer. */
     final class FieldValues {
@@ -419,6 +432,11 @@ public class OpenMapTilesSchema {
           "forest", "garden", "glacier", "grass", "grassland", "golf_course", "heath", "mangrove", "marsh", "meadow",
           "orchard", "park", "plant_nursery", "recreation_ground", "reedbed", "saltern", "saltmarsh", "sand", "scree",
           "swamp", "tidalflat", "tundra", "village_green", "vineyard", "wet_meadow", "wetland", "wood");
+      public static final String LEAF_TYPE_BROADLEAVED = "broadleaved";
+      public static final String LEAF_TYPE_NEEDLELEAVED = "needleleaved";
+      public static final String LEAF_TYPE_MIXED = "mixed";
+      public static final String LEAF_TYPE_LEAFLESS = "leafless";
+      public static final Set<String> LEAF_TYPE_VALUES = Set.of("broadleaved", "needleleaved", "mixed", "leafless");
     }
     /** Complex mappings to generate attribute values from OSM element tags in the landcover layer. */
     final class FieldMappings {
@@ -485,6 +503,7 @@ public class OpenMapTilesSchema {
        * <li>"hospital"
        * <li>"stadium"
        * <li>"pitch"
+       * <li>"sports_centre"
        * <li>"playground"
        * <li>"track"
        * <li>"theme_park"
@@ -494,6 +513,8 @@ public class OpenMapTilesSchema {
        * <li>"neighbourhood"
        * <li>"dam"
        * <li>"quarry"
+       * <li>"parking"
+       * <li>"camp_site"
        * </ul>
        */
       public static final String CLASS = "class";
@@ -517,6 +538,7 @@ public class OpenMapTilesSchema {
       public static final String CLASS_HOSPITAL = "hospital";
       public static final String CLASS_STADIUM = "stadium";
       public static final String CLASS_PITCH = "pitch";
+      public static final String CLASS_SPORTS_CENTRE = "sports_centre";
       public static final String CLASS_PLAYGROUND = "playground";
       public static final String CLASS_TRACK = "track";
       public static final String CLASS_THEME_PARK = "theme_park";
@@ -526,10 +548,12 @@ public class OpenMapTilesSchema {
       public static final String CLASS_NEIGHBOURHOOD = "neighbourhood";
       public static final String CLASS_DAM = "dam";
       public static final String CLASS_QUARRY = "quarry";
-      public static final Set<String> CLASS_VALUES =
-        Set.of("railway", "cemetery", "military", "residential", "commercial", "industrial", "garages", "retail",
-          "bus_station", "school", "university", "kindergarten", "college", "library", "hospital", "stadium", "pitch",
-          "playground", "track", "theme_park", "zoo", "suburb", "quarter", "neighbourhood", "dam", "quarry");
+      public static final String CLASS_PARKING = "parking";
+      public static final String CLASS_CAMP_SITE = "camp_site";
+      public static final Set<String> CLASS_VALUES = Set.of("railway", "cemetery", "military", "residential",
+        "commercial", "industrial", "garages", "retail", "bus_station", "school", "university", "kindergarten",
+        "college", "library", "hospital", "stadium", "pitch", "sports_centre", "playground", "track", "theme_park",
+        "zoo", "suburb", "quarter", "neighbourhood", "dam", "quarry", "parking", "camp_site");
     }
     /** Complex mappings to generate attribute values from OSM element tags in the landuse layer. */
     final class FieldMappings {
@@ -1662,6 +1686,7 @@ public class OpenMapTilesSchema {
        * <li>"isolated_dwelling"
        * <li>"island"
        * <li>"aboriginal_lands"
+       * <li>"square"
        * </ul>
        */
       public static final String CLASS = "class";
@@ -1701,9 +1726,10 @@ public class OpenMapTilesSchema {
       public static final String CLASS_ISOLATED_DWELLING = "isolated_dwelling";
       public static final String CLASS_ISLAND = "island";
       public static final String CLASS_ABORIGINAL_LANDS = "aboriginal_lands";
+      public static final String CLASS_SQUARE = "square";
       public static final Set<String> CLASS_VALUES =
         Set.of("continent", "country", "state", "province", "city", "town", "village", "hamlet", "borough", "suburb",
-          "quarter", "neighbourhood", "isolated_dwelling", "island", "aboriginal_lands");
+          "quarter", "neighbourhood", "isolated_dwelling", "island", "aboriginal_lands", "square");
     }
     /** Complex mappings to generate attribute values from OSM element tags in the place layer. */
     final class FieldMappings {

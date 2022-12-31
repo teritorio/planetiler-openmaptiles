@@ -52,7 +52,6 @@ import com.onthegomap.planetiler.stats.Stats;
 import com.onthegomap.planetiler.util.SortKey;
 import com.onthegomap.planetiler.util.Translations;
 import java.util.List;
-import java.util.Locale;
 import org.openmaptiles.OpenMapTilesProfile;
 import org.openmaptiles.generated.OpenMapTilesSchema;
 import org.openmaptiles.generated.Tables;
@@ -91,12 +90,12 @@ public class Park implements
 
   @Override
   public void process(Tables.OsmParkPolygon element, FeatureCollector features) {
-    String protectionTitle = element.protectionTitle();
-    if (protectionTitle != null) {
-      protectionTitle = protectionTitle.replace(' ', '_').toLowerCase(Locale.ROOT);
-    }
+    // String protectionTitle = element.protectionTitle();
+    // if (protectionTitle != null) {
+    //   protectionTitle = protectionTitle.replace(' ', '_').toLowerCase(Locale.ROOT);
+    // }
     String clazz = coalesce(
-      nullIfEmpty(protectionTitle),
+      // nullIfEmpty(protectionTitle),
       nullIfEmpty(element.boundary()),
       nullIfEmpty(element.leisure())
     );
@@ -123,7 +122,7 @@ public class Park implements
           .putAttrs(OmtLanguageUtils.getNames(element.source().tags(), translations))
           .setPointLabelGridPixelSize(14, 100)
           .setSortKey(SortKey
-            .orderByTruesFirst("national_park".equals(clazz))
+            .orderByTruesFirst("national_park".equals(clazz) || "protected_area".equals(clazz))
             .thenByTruesFirst(element.source().hasTag("wikipedia") || element.source().hasTag("wikidata"))
             .thenByLog(area, 1d, SMALLEST_PARK_WORLD_AREA, 1 << (SORT_KEY_BITS - 2) - 1)
             .get()
