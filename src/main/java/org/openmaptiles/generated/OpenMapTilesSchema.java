@@ -84,6 +84,7 @@ public class OpenMapTilesSchema {
       new org.openmaptiles.layers.Housenumber(translations, config, stats),
       new org.openmaptiles.layers.Poi(translations, config, stats),
       new org.openmaptiles.layers.AerodromeLabel(translations, config, stats),
+      new org.openmaptiles.layers.RouteBicycleHiking(translations, config, stats),
       new org.openmaptiles.layers.Tree(translations, config, stats)
     );
   }
@@ -2100,6 +2101,45 @@ public class OpenMapTilesSchema {
             matchAny("military", "airfield"))),
         MultiExpression.entry("private", or(matchAny("aerodrome", "private"), matchAny("aerodrome_type", "private"))),
         MultiExpression.entry("other", FALSE)));
+    }
+  }
+  /**
+   * <strong>route</strong> contains route for bicycle and hiking.
+   *
+   * Generated from <a href=
+   * "https://github.com/openmaptiles/openmaptiles/blob/openmaptiles/layers/route_bicycle_hiking/route_bicycle_hiking.yaml">route_bicycle_hiking.yaml</a>
+   */
+  public interface RouteBicycleHiking extends Layer {
+    double BUFFER_SIZE = 4.0;
+    String LAYER_NAME = "route_bicycle_hiking";
+
+    @Override
+    default String name() {
+      return LAYER_NAME;
+    }
+
+    /** Attribute names for map elements in the route_bicycle_hiking layer. */
+    final class Fields {
+      /** From 1 for international network to 4 for local. */
+      public static final String BICYCLE_NETWORK = "bicycle_network";
+      /** Name of the major network. */
+      public static final String BICYCLE_NAME = "bicycle_name";
+      /** Ref of the major network. */
+      public static final String BICYCLE_REF = "bicycle_ref";
+      /** From 1 for international network to 4 for local. */
+      public static final String HIKING_NETWORK = "hiking_network";
+      /** Name of the major network. */
+      public static final String HIKING_NAME = "hiking_name";
+      /** Ref of the major network. */
+      public static final String HIKING_REF = "hiking_ref";
+    }
+    /** Attribute values for map elements in the route_bicycle_hiking layer. */
+    final class FieldValues {
+
+    }
+    /** Complex mappings to generate attribute values from OSM element tags in the route_bicycle_hiking layer. */
+    final class FieldMappings {
+
     }
   }
   /**
