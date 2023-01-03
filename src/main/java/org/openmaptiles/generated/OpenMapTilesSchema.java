@@ -85,6 +85,7 @@ public class OpenMapTilesSchema {
       new org.openmaptiles.layers.Poi(translations, config, stats),
       new org.openmaptiles.layers.AerodromeLabel(translations, config, stats),
       new org.openmaptiles.layers.RouteBicycleHiking(translations, config, stats),
+      new org.openmaptiles.layers.TransportationBicycle(translations, config, stats),
       new org.openmaptiles.layers.Tree(translations, config, stats)
     );
   }
@@ -2138,6 +2139,76 @@ public class OpenMapTilesSchema {
 
     }
     /** Complex mappings to generate attribute values from OSM element tags in the route_bicycle_hiking layer. */
+    final class FieldMappings {
+
+    }
+  }
+  /**
+   * <strong>route</strong> contains route for bicycle and hiking.
+   *
+   * Generated from <a href=
+   * "https://github.com/openmaptiles/openmaptiles/blob/openmaptiles/layers/transportation_bicycle/transportation_bicycle.yaml">transportation_bicycle.yaml</a>
+   */
+  public interface TransportationBicycle extends Layer {
+    double BUFFER_SIZE = 16.0;
+    String LAYER_NAME = "transportation_bicycle";
+
+    @Override
+    default String name() {
+      return LAYER_NAME;
+    }
+
+    /** Attribute names for map elements in the transportation_bicycle layer. */
+    final class Fields {
+      /** OSM highway value. */
+      public static final String HIGHWAY = "highway";
+
+      /**
+       * Facility for bicycle.
+       * <p>
+       * allowed values:
+       * <ul>
+       * <li>"lane"
+       * <li>"track"
+       * <li>"busway"
+       * <li>"cycleway"
+       * </ul>
+       */
+      public static final String FACILITY = "facility";
+
+      /**
+       * For right hand driving side.
+       * </p>
+       * <ul>
+       * <li>1: right</li>
+       * <li>-1: left</li>
+       * </ul>
+       * <p>
+       * allowed values:
+       * <ul>
+       * <li>1
+       * <li>-1
+       * </ul>
+       */
+      public static final String ACCESS = "access";
+      /** Same as facility, only on left side. */
+      public static final String FACILITY_LEFT = "facility_left";
+      /** Same as access, only on left side. */
+      public static final String ACCESS_LEFT = "access_left";
+      /** Same as facility, only on left right. */
+      public static final String FACILITY_RIGHT = "facility_right";
+      /** Same as access, only on left right. */
+      public static final String ACCESS_RIGHT = "access_right";
+    }
+    /** Attribute values for map elements in the transportation_bicycle layer. */
+    final class FieldValues {
+      public static final String FACILITY_LANE = "lane";
+      public static final String FACILITY_TRACK = "track";
+      public static final String FACILITY_BUSWAY = "busway";
+      public static final String FACILITY_CYCLEWAY = "cycleway";
+      public static final Set<String> FACILITY_VALUES = Set.of("lane", "track", "busway", "cycleway");
+    }
+    /** Complex mappings to generate attribute values from OSM element tags in the transportation_bicycle layer. */
     final class FieldMappings {
 
     }
