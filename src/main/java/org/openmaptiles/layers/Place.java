@@ -290,7 +290,7 @@ public class Place implements
 
       features.pointOnSurface(LAYER_NAME).setBufferPixels(BUFFER_SIZE)
         .putAttrs(OmtLanguageUtils.getNames(element.source().tags(), translations))
-        .setAttr(Fields.CLASS, "island")
+        .setAttr(Fields.CLASS, element.place() != null && element.place().equals("island") ? "island" : "forest")
         .setAttr(Fields.RANK, rank)
         .setMinZoom(minzoom)
         .setSortKey(SortKey.orderByLog(area, 1d, MIN_ISLAND_WORLD_AREA).get());
@@ -345,9 +345,9 @@ public class Place implements
 
     int minzoom = rank != null && rank == 1 ? 2 :
       rank != null && rank <= 8 ? Math.max(3, rank - 1) :
-      placeType.ordinal() <= PlaceType.TOWN.ordinal() ? 7 :
-      placeType.ordinal() <= PlaceType.VILLAGE.ordinal() ? 8 :
-      placeType.ordinal() <= PlaceType.SUBURB.ordinal() ? 11 : 14;
+      placeType.ordinal() <= PlaceType.TOWN.ordinal() ? 6 :
+      placeType.ordinal() <= PlaceType.VILLAGE.ordinal() ? 7 :
+      placeType.ordinal() <= PlaceType.SUBURB.ordinal() ? 10 : 13;
 
     var feature = features.point(LAYER_NAME).setBufferPixels(BUFFER_SIZE)
       .putAttrs(OmtLanguageUtils.getNames(element.source().tags(), translations))
@@ -355,7 +355,7 @@ public class Place implements
       .setAttr(Fields.RANK, rank)
       .setMinZoom(minzoom)
       .setSortKey(getSortKey(rank, placeType, element.population(), element.name()))
-      .setPointLabelGridPixelSize(12, 128);
+      .setPointLabelGridPixelSize(11, 128);
 
     if (rank == null) {
       feature.setPointLabelGridLimit(LABEL_GRID_LIMITS);
