@@ -83,6 +83,8 @@ public class OpenMapTilesSchema {
       new org.openmaptiles.layers.Place(translations, config, stats),
       new org.openmaptiles.layers.Housenumber(translations, config, stats),
       new org.openmaptiles.layers.Poi(translations, config, stats),
+      new org.openmaptiles.layers.PoiTourism(translations, config, stats),
+      new org.openmaptiles.layers.PoiCity(translations, config, stats),
       new org.openmaptiles.layers.AerodromeLabel(translations, config, stats),
       new org.openmaptiles.layers.RouteBicycleHiking(translations, config, stats),
       new org.openmaptiles.layers.TransportationBicycle(translations, config, stats),
@@ -2017,6 +2019,480 @@ public class OpenMapTilesSchema {
         MultiExpression.entry("castle", matchAny("subclass", "castle", "ruins")),
         MultiExpression.entry("atm", matchAny("subclass", "atm")),
         MultiExpression.entry("fuel", matchAny("subclass", "fuel", "charging_station"))));
+    }
+  }
+  /**
+   * <a href="http://wiki.openstreetmap.org/wiki/Points_of_interest">Points of interests</a> containing a of a variety
+   * of OpenStreetMap tags. Mostly contains amenities, sport, shop and tourist POIs.
+   *
+   * Generated from <a href=
+   * "https://github.com/openmaptiles/openmaptiles/blob/openmaptiles/layers/poi_tourism/poi_tourism.yaml">poi_tourism.yaml</a>
+   */
+  public interface PoiTourism extends Layer {
+    double BUFFER_SIZE = 64.0;
+    String LAYER_NAME = "poi_tourism";
+
+    @Override
+    default String name() {
+      return LAYER_NAME;
+    }
+
+    /** Attribute names for map elements in the poi_tourism layer. */
+    final class Fields {
+      /** The OSM <a href="http://wiki.openstreetmap.org/wiki/Key:name"><code>name</code></a> value of the POI. */
+      public static final String NAME = "name";
+      /** English name <code>name:en</code> if available, otherwise <code>name</code>. */
+      public static final String NAME_EN = "name_en";
+      /** German name <code>name:de</code> if available, otherwise <code>name</code> or <code>name:en</code>. */
+      public static final String NAME_DE = "name_de";
+      /**  */
+      public static final String SUPERCLASS = "superclass";
+      /**
+       * More general classes of POIs. If there is no more general <code>class</code> for the <code>subclass</code> this
+       * field will contain the same value as <code>subclass</code>. But for example for schools you only need to style
+       * the class <code>school</code> to filter the subclasses <code>school</code> and <code>kindergarten</code>. Or
+       * use the class <code>shop</code> to style all shops.
+       */
+      public static final String CLASS = "class";
+      /**
+       * Original value of either the <a href="http://wiki.openstreetmap.org/wiki/Key:amenity"><code>amenity</code></a>,
+       * <a href="http://wiki.openstreetmap.org/wiki/Key:barrier"><code>barrier</code></a>,
+       * <a href="http://wiki.openstreetmap.org/wiki/Key:historic"><code>historic</code></a>,
+       * <a href="http://wiki.openstreetmap.org/wiki/Key:information"><code>information</code></a>,
+       * <a href="http://wiki.openstreetmap.org/wiki/Key:landuse"><code>landuse</code></a>,
+       * <a href="http://wiki.openstreetmap.org/wiki/Key:leisure"><code>leisure</code></a>,
+       * <a href="http://wiki.openstreetmap.org/wiki/Key:railway"><code>railway</code></a>,
+       * <a href="http://wiki.openstreetmap.org/wiki/Key:shop"><code>shop</code></a>,
+       * <a href="http://wiki.openstreetmap.org/wiki/Key:sport"><code>sport</code></a>,
+       * <a href="http://wiki.openstreetmap.org/wiki/Key:station"><code>station</code></a>,
+       * <a href="http://wiki.openstreetmap.org/wiki/Key:religion"><code>religion</code></a>,
+       * <a href="http://wiki.openstreetmap.org/wiki/Key:tourism"><code>tourism</code></a>,
+       * <a href="http://wiki.openstreetmap.org/wiki/Key:aerialway"><code>aerialway</code></a>,
+       * <a href="http://wiki.openstreetmap.org/wiki/Key:building"><code>building</code></a>,
+       * <a href="http://wiki.openstreetmap.org/wiki/Key:highway"><code>highway</code></a> or
+       * <a href="http://wiki.openstreetmap.org/wiki/Key:waterway"><code>waterway</code></a> tag. Use this to do more
+       * precise styling.
+       */
+      public static final String SUBCLASS = "subclass";
+      /**  */
+      public static final String ZOOM = "zoom";
+      /**  */
+      public static final String PRIORITY = "priority";
+      /**  */
+      public static final String STYLE = "style";
+
+      /**
+       * Experimental feature! Indicates main platform of public transport stops (buses, trams, and subways). Grouping
+       * of platforms is implemented using
+       * <a href="http://wiki.openstreetmap.org/wiki/Key:uic_ref"><code>uic_ref</code></a> tag that is not used
+       * worldwide.
+       * <p>
+       * allowed values:
+       * <ul>
+       * <li>1
+       * </ul>
+       */
+      public static final String AGG_STOP = "agg_stop";
+      /** Original value of <a href="http://wiki.openstreetmap.org/wiki/Key:layer"><code>layer</code></a> tag. */
+      public static final String LAYER = "layer";
+      /** Original value of <a href="http://wiki.openstreetmap.org/wiki/Key:level"><code>level</code></a> tag. */
+      public static final String LEVEL = "level";
+
+      /**
+       * Original value of <a href="http://wiki.openstreetmap.org/wiki/Key:indoor"><code>indoor</code></a> tag.
+       * <p>
+       * allowed values:
+       * <ul>
+       * <li>1
+       * </ul>
+       */
+      public static final String INDOOR = "indoor";
+      /**
+       * The POIs are ranked ascending according to their importance within a grid. The <code>rank</code> value shows
+       * the local relative importance of a POI within it's cell in the grid. This can be used to reduce label density
+       * at <em>z14</em>. Since all POIs already need to be contained at <em>z14</em> you can use
+       * <code>less than rank=10</code> epxression to limit POIs. At some point like <em>z17</em> you can show all POIs.
+       */
+      public static final String RANK = "rank";
+      /**  */
+      public static final String LOCAL_NAME = "local_name";
+      /**  */
+      public static final String ALT_NAME = "alt_name";
+      /**  */
+      public static final String CONTACT__PHONE = "contact:phone";
+      /**  */
+      public static final String CONTACT__MOBILE = "contact:mobile";
+      /**  */
+      public static final String CONTACT__FAX = "contact:fax";
+      /**  */
+      public static final String CONTACT__WEBSITE = "contact:website";
+      /**  */
+      public static final String CONTACT__EMAIL = "contact:email";
+      /**  */
+      public static final String CONTACT__FACEBOOK = "contact:facebook";
+      /**  */
+      public static final String PHONE = "phone";
+      /**  */
+      public static final String FAX = "fax";
+      /**  */
+      public static final String EMAIL = "email";
+      /**  */
+      public static final String WEBSITE = "website";
+      /**  */
+      public static final String ADRESS = "adress";
+      /**  */
+      public static final String ADDR__HOUSENUMBER = "addr:housenumber";
+      /**  */
+      public static final String ADDR__HOUSENAME = "addr:housename";
+      /**  */
+      public static final String ADDR__FLATS = "addr:flats";
+      /**  */
+      public static final String ADDR__STREET = "addr:street";
+      /**  */
+      public static final String ADDR__PLACE = "addr:place";
+      /**  */
+      public static final String ADDR__POSTCODE = "addr:postcode";
+      /**  */
+      public static final String ADDR__CITY = "addr:city";
+      /**  */
+      public static final String ADDR__COUNTRY = "addr:country";
+      /**  */
+      public static final String REF__FR__CRTA = "ref:FR:CRTA";
+      /**  */
+      public static final String OPENING_HOURS = "opening_hours";
+      /**  */
+      public static final String WHEELCHAIR = "wheelchair";
+      /**  */
+      public static final String ACCESS = "access";
+      /**  */
+      public static final String FEE = "fee";
+      /**  */
+      public static final String CAR = "car";
+      /**  */
+      public static final String BICYCLE = "bicycle";
+      /**  */
+      public static final String MALE = "male";
+      /**  */
+      public static final String FEMALE = "female";
+      /**  */
+      public static final String UNISEX = "unisex";
+      /**  */
+      public static final String SUPERVISED = "supervised";
+      /**  */
+      public static final String CAPACITY = "capacity";
+      /**  */
+      public static final String DELIVERY = "delivery";
+      /**  */
+      public static final String TAKEAWAY = "takeaway";
+      /**  */
+      public static final String PARK_RIDE = "park_ride";
+      /**  */
+      public static final String COVERED = "covered";
+      /**  */
+      public static final String SURVEILLANCE = "surveillance";
+      /**  */
+      public static final String ORGANIC = "organic";
+      /**  */
+      public static final String PRODUCE_ON_SITE = "produce_on_site";
+      /**  */
+      public static final String SECOND_HAND = "second_hand";
+      /**  */
+      public static final String OPERATOR = "operator";
+      /**  */
+      public static final String NETWORK = "network";
+      /**  */
+      public static final String MAPILLARY = "mapillary";
+      /**  */
+      public static final String DESCRIPTION = "description";
+      /**  */
+      public static final String INFORMATION = "information";
+      /**  */
+      public static final String BOARD_TYPE = "board_type";
+      /**  */
+      public static final String REF = "ref";
+      /**  */
+      public static final String VENDING = "vending";
+      /**  */
+      public static final String BUILDING = "building";
+      /**  */
+      public static final String SERVICE__BICYLE = "service:bicyle";
+      /**  */
+      public static final String SHELTER_TYPE = "shelter_type";
+      /**  */
+      public static final String WASTE = "waste";
+      /**  */
+      public static final String TOWER__TYPE = "tower:type";
+      /**  */
+      public static final String ELE = "ele";
+      /**  */
+      public static final String CUISINE = "cuisine";
+      /**  */
+      public static final String STARS = "stars";
+      /**  */
+      public static final String CASTLE_TYPE = "castle_type";
+      /**  */
+      public static final String HERITAGE = "heritage";
+      /**  */
+      public static final String ARTWORK_TYPE = "artwork_type";
+      /**  */
+      public static final String MUSEUM = "museum";
+      /**  */
+      public static final String WIKIPEDIA = "wikipedia";
+      /**  */
+      public static final String WIKIDATA = "wikidata";
+      /**  */
+      public static final String HEALTHCARE = "healthcare";
+      /**  */
+      public static final String HEALTHCARE__SPECIALITY = "healthcare:speciality";
+      /**  */
+      public static final String EMERGENCY = "emergency";
+      /**  */
+      public static final String KINDERGARTEN__FR = "kindergarten:FR";
+    }
+    /** Attribute values for map elements in the poi_tourism layer. */
+    final class FieldValues {
+
+    }
+    /** Complex mappings to generate attribute values from OSM element tags in the poi_tourism layer. */
+    final class FieldMappings {
+
+    }
+  }
+  /**
+   * <a href="http://wiki.openstreetmap.org/wiki/Points_of_interest">Points of interests</a> containing a of a variety
+   * of OpenStreetMap tags. Mostly contains amenities, sport, shop and tourist POIs.
+   *
+   * Generated from <a href=
+   * "https://github.com/openmaptiles/openmaptiles/blob/openmaptiles/layers/poi_city/poi_city.yaml">poi_city.yaml</a>
+   */
+  public interface PoiCity extends Layer {
+    double BUFFER_SIZE = 64.0;
+    String LAYER_NAME = "poi_city";
+
+    @Override
+    default String name() {
+      return LAYER_NAME;
+    }
+
+    /** Attribute names for map elements in the poi_city layer. */
+    final class Fields {
+      /** The OSM <a href="http://wiki.openstreetmap.org/wiki/Key:name"><code>name</code></a> value of the POI. */
+      public static final String NAME = "name";
+      /** English name <code>name:en</code> if available, otherwise <code>name</code>. */
+      public static final String NAME_EN = "name_en";
+      /** German name <code>name:de</code> if available, otherwise <code>name</code> or <code>name:en</code>. */
+      public static final String NAME_DE = "name_de";
+      /**  */
+      public static final String SUPERCLASS = "superclass";
+      /**
+       * More general classes of POIs. If there is no more general <code>class</code> for the <code>subclass</code> this
+       * field will contain the same value as <code>subclass</code>. But for example for schools you only need to style
+       * the class <code>school</code> to filter the subclasses <code>school</code> and <code>kindergarten</code>. Or
+       * use the class <code>shop</code> to style all shops.
+       */
+      public static final String CLASS = "class";
+      /**
+       * Original value of either the <a href="http://wiki.openstreetmap.org/wiki/Key:amenity"><code>amenity</code></a>,
+       * <a href="http://wiki.openstreetmap.org/wiki/Key:barrier"><code>barrier</code></a>,
+       * <a href="http://wiki.openstreetmap.org/wiki/Key:historic"><code>historic</code></a>,
+       * <a href="http://wiki.openstreetmap.org/wiki/Key:information"><code>information</code></a>,
+       * <a href="http://wiki.openstreetmap.org/wiki/Key:landuse"><code>landuse</code></a>,
+       * <a href="http://wiki.openstreetmap.org/wiki/Key:leisure"><code>leisure</code></a>,
+       * <a href="http://wiki.openstreetmap.org/wiki/Key:railway"><code>railway</code></a>,
+       * <a href="http://wiki.openstreetmap.org/wiki/Key:shop"><code>shop</code></a>,
+       * <a href="http://wiki.openstreetmap.org/wiki/Key:sport"><code>sport</code></a>,
+       * <a href="http://wiki.openstreetmap.org/wiki/Key:station"><code>station</code></a>,
+       * <a href="http://wiki.openstreetmap.org/wiki/Key:religion"><code>religion</code></a>,
+       * <a href="http://wiki.openstreetmap.org/wiki/Key:tourism"><code>tourism</code></a>,
+       * <a href="http://wiki.openstreetmap.org/wiki/Key:aerialway"><code>aerialway</code></a>,
+       * <a href="http://wiki.openstreetmap.org/wiki/Key:building"><code>building</code></a>,
+       * <a href="http://wiki.openstreetmap.org/wiki/Key:highway"><code>highway</code></a> or
+       * <a href="http://wiki.openstreetmap.org/wiki/Key:waterway"><code>waterway</code></a> tag. Use this to do more
+       * precise styling.
+       */
+      public static final String SUBCLASS = "subclass";
+      /**  */
+      public static final String ZOOM = "zoom";
+      /**  */
+      public static final String PRIORITY = "priority";
+      /**  */
+      public static final String STYLE = "style";
+
+      /**
+       * Experimental feature! Indicates main platform of public transport stops (buses, trams, and subways). Grouping
+       * of platforms is implemented using
+       * <a href="http://wiki.openstreetmap.org/wiki/Key:uic_ref"><code>uic_ref</code></a> tag that is not used
+       * worldwide.
+       * <p>
+       * allowed values:
+       * <ul>
+       * <li>1
+       * </ul>
+       */
+      public static final String AGG_STOP = "agg_stop";
+      /** Original value of <a href="http://wiki.openstreetmap.org/wiki/Key:layer"><code>layer</code></a> tag. */
+      public static final String LAYER = "layer";
+      /** Original value of <a href="http://wiki.openstreetmap.org/wiki/Key:level"><code>level</code></a> tag. */
+      public static final String LEVEL = "level";
+
+      /**
+       * Original value of <a href="http://wiki.openstreetmap.org/wiki/Key:indoor"><code>indoor</code></a> tag.
+       * <p>
+       * allowed values:
+       * <ul>
+       * <li>1
+       * </ul>
+       */
+      public static final String INDOOR = "indoor";
+      /**
+       * The POIs are ranked ascending according to their importance within a grid. The <code>rank</code> value shows
+       * the local relative importance of a POI within it's cell in the grid. This can be used to reduce label density
+       * at <em>z14</em>. Since all POIs already need to be contained at <em>z14</em> you can use
+       * <code>less than rank=10</code> epxression to limit POIs. At some point like <em>z17</em> you can show all POIs.
+       */
+      public static final String RANK = "rank";
+      /**  */
+      public static final String LOCAL_NAME = "local_name";
+      /**  */
+      public static final String ALT_NAME = "alt_name";
+      /**  */
+      public static final String CONTACT__PHONE = "contact:phone";
+      /**  */
+      public static final String CONTACT__MOBILE = "contact:mobile";
+      /**  */
+      public static final String CONTACT__FAX = "contact:fax";
+      /**  */
+      public static final String CONTACT__WEBSITE = "contact:website";
+      /**  */
+      public static final String CONTACT__EMAIL = "contact:email";
+      /**  */
+      public static final String CONTACT__FACEBOOK = "contact:facebook";
+      /**  */
+      public static final String PHONE = "phone";
+      /**  */
+      public static final String FAX = "fax";
+      /**  */
+      public static final String EMAIL = "email";
+      /**  */
+      public static final String WEBSITE = "website";
+      /**  */
+      public static final String ADRESS = "adress";
+      /**  */
+      public static final String ADDR__HOUSENUMBER = "addr:housenumber";
+      /**  */
+      public static final String ADDR__HOUSENAME = "addr:housename";
+      /**  */
+      public static final String ADDR__FLATS = "addr:flats";
+      /**  */
+      public static final String ADDR__STREET = "addr:street";
+      /**  */
+      public static final String ADDR__PLACE = "addr:place";
+      /**  */
+      public static final String ADDR__POSTCODE = "addr:postcode";
+      /**  */
+      public static final String ADDR__CITY = "addr:city";
+      /**  */
+      public static final String ADDR__COUNTRY = "addr:country";
+      /**  */
+      public static final String REF__FR__CRTA = "ref:FR:CRTA";
+      /**  */
+      public static final String OPENING_HOURS = "opening_hours";
+      /**  */
+      public static final String WHEELCHAIR = "wheelchair";
+      /**  */
+      public static final String ACCESS = "access";
+      /**  */
+      public static final String FEE = "fee";
+      /**  */
+      public static final String CAR = "car";
+      /**  */
+      public static final String BICYCLE = "bicycle";
+      /**  */
+      public static final String MALE = "male";
+      /**  */
+      public static final String FEMALE = "female";
+      /**  */
+      public static final String UNISEX = "unisex";
+      /**  */
+      public static final String SUPERVISED = "supervised";
+      /**  */
+      public static final String CAPACITY = "capacity";
+      /**  */
+      public static final String DELIVERY = "delivery";
+      /**  */
+      public static final String TAKEAWAY = "takeaway";
+      /**  */
+      public static final String PARK_RIDE = "park_ride";
+      /**  */
+      public static final String COVERED = "covered";
+      /**  */
+      public static final String SURVEILLANCE = "surveillance";
+      /**  */
+      public static final String ORGANIC = "organic";
+      /**  */
+      public static final String PRODUCE_ON_SITE = "produce_on_site";
+      /**  */
+      public static final String SECOND_HAND = "second_hand";
+      /**  */
+      public static final String OPERATOR = "operator";
+      /**  */
+      public static final String NETWORK = "network";
+      /**  */
+      public static final String MAPILLARY = "mapillary";
+      /**  */
+      public static final String DESCRIPTION = "description";
+      /**  */
+      public static final String INFORMATION = "information";
+      /**  */
+      public static final String BOARD_TYPE = "board_type";
+      /**  */
+      public static final String REF = "ref";
+      /**  */
+      public static final String VENDING = "vending";
+      /**  */
+      public static final String BUILDING = "building";
+      /**  */
+      public static final String SERVICE__BICYLE = "service:bicyle";
+      /**  */
+      public static final String SHELTER_TYPE = "shelter_type";
+      /**  */
+      public static final String WASTE = "waste";
+      /**  */
+      public static final String TOWER__TYPE = "tower:type";
+      /**  */
+      public static final String ELE = "ele";
+      /**  */
+      public static final String CUISINE = "cuisine";
+      /**  */
+      public static final String STARS = "stars";
+      /**  */
+      public static final String CASTLE_TYPE = "castle_type";
+      /**  */
+      public static final String HERITAGE = "heritage";
+      /**  */
+      public static final String ARTWORK_TYPE = "artwork_type";
+      /**  */
+      public static final String MUSEUM = "museum";
+      /**  */
+      public static final String WIKIPEDIA = "wikipedia";
+      /**  */
+      public static final String WIKIDATA = "wikidata";
+      /**  */
+      public static final String HEALTHCARE = "healthcare";
+      /**  */
+      public static final String HEALTHCARE__SPECIALITY = "healthcare:speciality";
+      /**  */
+      public static final String EMERGENCY = "emergency";
+      /**  */
+      public static final String KINDERGARTEN__FR = "kindergarten:FR";
+    }
+    /** Attribute values for map elements in the poi_city layer. */
+    final class FieldValues {
+
+    }
+    /** Complex mappings to generate attribute values from OSM element tags in the poi_city layer. */
+    final class FieldMappings {
+
     }
   }
   /**
