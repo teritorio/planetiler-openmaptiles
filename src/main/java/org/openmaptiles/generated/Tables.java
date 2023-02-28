@@ -708,7 +708,8 @@ public class Tables {
     }
 
     /** Imposm3 "mapping" to filter OSM elements that should appear in this "table". */
-    public static final Expression MAPPING = and(matchAny("place", "square"), matchField("name"), matchType("polygon"));
+    public static final Expression MAPPING = and(matchAny("place", "city", "town", "village", "hamlet", "suburb",
+      "quarter", "neighbourhood", "isolated_dwelling", "square", "locality"), matchField("name"), matchType("polygon"));
 
     /**
      * Interface for layer implementations to extend to subscribe to OSM elements filtered and parsed as

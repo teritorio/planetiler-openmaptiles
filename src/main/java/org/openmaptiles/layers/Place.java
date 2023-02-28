@@ -89,6 +89,7 @@ public class Place implements
   Tables.OsmIslandPolygon.Handler,
   Tables.OsmCityPoint.Handler,
   Tables.OsmBoundaryPolygon.Handler,
+  Tables.OsmCityPolygon.Handler,
   OpenMapTilesProfile.FeaturePostProcessor {
 
   /*
@@ -311,6 +312,16 @@ public class Place implements
 
   @Override
   public void process(Tables.OsmCityPoint element, FeatureCollector features) {
+    setupPlaceFeature(element, features.point(LAYER_NAME));
+  }
+
+  @Override
+  public void process(Tables.OsmCityPolygon element, FeatureCollector features) {
+    setupPlaceFeature(element, features.centroidIfConvex(LAYER_NAME));
+  }
+
+  private <T extends Tables.WithName & Tables.WithNameEn & Tables.WithPlace & Tables.WithPopulation & Tables.WithCapital & Tables.WithRank & Tables.WithSource> void setupPlaceFeature(
+    T element, FeatureCollector.Feature output) {
     Integer rank = null;
     if (MAJOR_CITY_PLACES.contains(element.place())) {
       // only for major cities, attempt to find a nearby natural earth label with a similar
@@ -349,7 +360,7 @@ public class Place implements
       placeType.ordinal() <= PlaceType.VILLAGE.ordinal() ? 7 :
       placeType.ordinal() <= PlaceType.SUBURB.ordinal() ? 10 : 13;
 
-    var feature = features.point(LAYER_NAME).setBufferPixels(BUFFER_SIZE)
+    var feature = output.setBufferPixels(BUFFER_SIZE)
       .putAttrs(OmtLanguageUtils.getNames(element.source().tags(), translations))
       .setAttr(Fields.CLASS, element.place())
       .setAttr(Fields.RANK, rank)
