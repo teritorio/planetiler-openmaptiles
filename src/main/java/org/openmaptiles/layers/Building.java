@@ -67,6 +67,7 @@ import org.openmaptiles.generated.Tables;
 public class Building implements
   OpenMapTilesSchema.Building,
   Tables.OsmBuildingPolygon.Handler,
+  Tables.OsmBarrierLinestring.Handler,
   OpenMapTilesProfile.FeaturePostProcessor,
   OpenMapTilesProfile.OsmRelationPreprocessor {
 
@@ -172,6 +173,24 @@ public class Building implements
           .setMinPixelSize(0.1)
           .setPixelTolerance(0.25);
       }
+    }
+  }
+
+  @Override
+  public void process(Tables.OsmBarrierLinestring element, FeatureCollector features) {
+    Double height = coalesce(
+      parseDoubleOrNull(element.height()),
+      parseDoubleOrNull(element.height())
+    );
+
+    int renderHeight = (int) Math.ceil(height != null ? height : 5);
+
+    if (renderHeight < 3660) {
+      var feature = features.line(LAYER_NAME).setBufferPixels(BUFFER_SIZE)
+        .setMinZoom(13)
+        .setMinPixelSize(2)
+        .setAttrWithMinzoom(Fields.RENDER_HEIGHT, renderHeight, 14)
+        .setSortKey(renderHeight);
     }
   }
 
