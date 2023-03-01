@@ -1276,9 +1276,10 @@ public class Tables {
       or(matchAny("highway", "cycleway", "residential", "service", "track", "unclassified", "footway", "path",
         "tertiary", "secondary", "primary", "living_street", "steps", "pedestrian", "primary_link", "secondary_link",
         "tertiary_link", "road", "bridleway"), matchAny("junction", "roundabout")),
-      matchField("highway"), not(matchAny("bicycle", "no", "none")),
-      not(matchAny("highway", "motorway", "motorway_link")), not(matchAny("service", "parking_aisle")),
-      matchType("linestring"));
+      matchField("highway"), not(matchAny("bicycle", "no", "none")), not(matchAny("cycleway", "separate")),
+      not(matchAny("cycleway:left", "separate")), not(matchAny("cycleway:right", "separate")),
+      not(matchAny("cycleway:both", "separate")), not(matchAny("highway", "motorway", "motorway_link")),
+      not(matchAny("service", "parking_aisle")), matchType("linestring"));
 
     /**
      * Interface for layer implementations to extend to subscribe to OSM elements filtered and parsed as
