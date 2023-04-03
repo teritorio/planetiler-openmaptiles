@@ -11,7 +11,7 @@ BASE_URL="${2:-"https://raw.githubusercontent.com/openmaptiles/openmaptiles/"}"
 echo "base-url=${BASE_URL}"
 
 echo "Building..."
-./mvnw -DskipTests=true package
+./mvnw -DskipTests=true --no-snapshot-updates package
 
 echo "Running..."
 java -cp target/*-with-deps.jar org.openmaptiles.Generate -tag="${TAG}" -base-url="${BASE_URL}"
