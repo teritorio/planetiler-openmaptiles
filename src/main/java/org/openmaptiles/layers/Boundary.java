@@ -176,7 +176,8 @@ public class Boundary implements
     if (onlyOsmBoundaries) {
       return;
     }
-    boolean disputed = feature.getString("featurecla", "").startsWith("Disputed");
+    boolean disputed =
+      feature.getString("featurecla", "").startsWith("Disputed") || feature.getString("brk_a3", "").equals("B28");
     record BoundaryInfo(int adminLevel, int minzoom, int maxzoom) {}
     BoundaryInfo info = switch (table) {
       case "ne_110m_admin_0_boundary_lines_land" -> new BoundaryInfo(2, 0, 0);
@@ -210,7 +211,8 @@ public class Boundary implements
         .setMinPixelSizeAtAllZooms(0)
         .setAttr(Fields.ADMIN_LEVEL, info.adminLevel)
         .setAttr(Fields.MARITIME, 0)
-        .setAttr(Fields.DISPUTED, disputed ? 1 : 0);
+        .setAttr(Fields.DISPUTED, disputed ? 1 : 0)
+        .setAttr(Fields.DISPUTED_NAME, feature.getString("brk_a3"));
     }
   }
 
